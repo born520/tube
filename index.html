@@ -16,7 +16,7 @@
         #videoList {
             display: grid;
             gap: 20px;
-            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); /* Adjust for better sizing */
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
             width: 100%;
             max-width: 1200px;
             padding: 20px;
@@ -36,10 +36,8 @@
         }
         .thumbnail {
             width: 100%;
-            height: auto; /* Maintain aspect ratio */
+            height: auto;
             background-color: #e0e0e0;
-            position: relative;
-            overflow: hidden;
         }
         .title {
             padding: 8px 10px;
@@ -54,6 +52,8 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
+            width: 90%; /* 모바일 화면 크기에 맞춰 조정 */
+            max-width: 560px; /* 최대 폭 설정 */
             z-index: 10;
             background-color: white;
             padding: 20px;
@@ -69,25 +69,41 @@
             background-color: rgba(0, 0, 0, 0.7);
             z-index: 5;
         }
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #f44;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
     <div id="videoList"></div>
     <div class="overlay" id="overlay" onclick="closePopup()"></div>
     <div class="popup" id="popup">
-        <button onclick="closePopup()">Close</button>
+        <button class="close-btn" onclick="closePopup()">×</button>
         <div id="videoPlayer"></div>
     </div>
 
     <script>
-        const scriptUrl = 'https://script.google.com/macros/s/AKfycbzakyKFwPo3KsvaYPjMk92OJ_h0Dzy7jgUapVroc-r5tc3cEqqh3ES0IkVoN8nnayPMRg/exec'; // 웹 앱 URL
+        const scriptUrl = 'https://script.google.com/macros/s/AKfycbzakyKFwPo3KsvaYPjMk92OJ_h0Dzy7jgUapVroc-r5tc3cEqqh3ES0IkVoN8nnayPMRg/exec';
 
         function showPopup(videoId) {
             const popup = document.getElementById('popup');
             const overlay = document.getElementById('overlay');
             const videoPlayer = document.getElementById('videoPlayer');
 
-            videoPlayer.innerHTML = `<iframe width="560" height="315" src="https://www.youtube.com/embed/${videoId}?autoplay=1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+            videoPlayer.innerHTML = `<iframe width="100%" height="315" src="https://www.youtube.com/embed/${videoId}?autoplay=1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
             
             popup.style.display = 'block';
             overlay.style.display = 'block';
@@ -107,7 +123,6 @@
             fetch(scriptUrl)
                 .then(response => response.json())
                 .then(data => {
-                    console.log(data); // 데이터를 콘솔에 로그
                     renderThumbnails(data);
                 })
                 .catch(error => console.error('Error fetching data:', error));
@@ -115,12 +130,12 @@
 
         function renderThumbnails(data) {
             const videoList = document.getElementById('videoList');
-            videoList.innerHTML = ''; // Clear previous entries
+            videoList.innerHTML = '';
 
             data.forEach(entry => {
                 const videoItem = document.createElement('div');
                 videoItem.className = 'videoItem';
-                videoItem.onclick = () => showPopup(entry.videoId); // 전체 아이템 클릭 가능
+                videoItem.onclick = () => showPopup(entry.videoId);
 
                 const img = document.createElement('img');
                 img.src = entry.thumbnail;
