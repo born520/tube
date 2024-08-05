@@ -1,15 +1,22 @@
 const scriptUrl = 'https://script.google.com/macros/s/AKfycbzakyKFwPo3KsvaYPjMk92OJ_h0Dzy7jgUapVroc-r5tc3cEqqh3ES0IkVoN8nnayPMRg/exec';
 
+const CACHE_EXPIRATION_TIME = 3600000; // 1시간 (밀리초 단위)
+
 function loadVideos() {
-    let cachedData = localStorage.getItem('videoData');
-    if (cachedData) {
+    const cachedData = localStorage.getItem('videoData');
+    const cacheTimestamp = localStorage.getItem('cacheTimestamp');
+
+    const now = new Date().getTime();
+
+    if (cachedData && cacheTimestamp && (now - cacheTimestamp < CACHE_EXPIRATION_TIME)) {
         renderThumbnails(JSON.parse(cachedData));
         lazyLoadImages();
     } else {
         fetch(scriptUrl)
             .then(response => response.json())
             .then(data => {
-                localStorage.setItem('videoData', JSON.stringify(data)); // 데이터 캐시
+                localStorage.setItem('videoData', JSON.stringify(data));
+                localStorage.setItem('cacheTimestamp', now); // 타임스탬프 저장
                 renderThumbnails(data);
                 lazyLoadImages();
             })
