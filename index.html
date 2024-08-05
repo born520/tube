@@ -17,129 +17,90 @@
             display: grid;
             gap: 20px;
             grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-            width: 100%;
-            max-width: 1200px;
             padding: 20px;
             box-sizing: border-box;
         }
         .videoItem {
-            text-align: center;
             background-color: #fff;
             border-radius: 8px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             overflow: hidden;
-            transition: transform 0.2s;
             cursor: pointer;
+            text-align: center;
         }
-        .videoItem:hover {
-            transform: translateY(-10px);
-        }
-        .thumbnail {
+        img.lazy {
             width: 100%;
-            height: auto;
-            background-color: #e0e0e0;
+            height: auto; /* Maintain aspect ratio */
         }
         .title {
-            padding: 8px 10px;
+            padding: 8px;
             font-size: 14px;
             font-weight: bold;
             color: #333;
             background-color: #f9f9f9;
         }
-        .popup {
-            display: none;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 90%; /* 모바일 화면 크기에 맞춰 조정 */
-            max-width: 560px; /* 최대 폭 설정 */
-            z-index: 10;
-            background-color: white;
-            padding: 20px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-        }
-        .overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.7);
-            z-index: 5;
-        }
-        .close-btn {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: #f44;
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 32px;
-            height: 32px;
-            font-size: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-        }
     </style>
 </head>
 <body>
     <div id="videoList"></div>
-    <div class="overlay" id="overlay" onclick="closePopup()"></div>
-    <div class="popup" id="popup">
-        <button class="close-btn" onclick="closePopup()">×</button>
-        <div id="videoPlayer"></div>
-    </div>
-
     <script>
-        const scriptUrl = 'https://script.google.com/macros/s/AKfycbzakyKFwPo3KsvaYPjMk92OJ_h0Dzy7jgUapVroc-r5tc3cEqqh3ES0IkVoN8nnayPMRg/exec';
+        const scriptUrl = 'https://your-script-url.com';
 
-        function showPopup(videoId) {
-            const popup = document.getElementById('popup');
-            const overlay = document.getElementById('overlay');
-            const videoPlayer = document.getElementById('videoPlayer');
+        document.addEventListener("DOMContentLoaded", function() {
+            var lazyImages = [].slice.call(document.querySelectorAll("img.lazy"));
 
-            videoPlayer.innerHTML = `<iframe width="100%" height="315" src="https://www.youtube.com/embed/${videoId}?autoplay=1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
-            
-            popup.style.display = 'block';
-            overlay.style.display = 'block';
-        }
+            if ("IntersectionObserver" in window) {
+                let lazyImageObserver = new IntersectionObserver(function(entries, observer) {
+                    entries.forEach(function(entry) {
+                        if (entry.isIntersecting) {
+                            let lazyImage = entry.target;
+                            lazyImage.src = lazyImage.dataset.src;
+                            lazyImage.classList.remove("lazy");
+                            lazyImageObserver.unobserve(lazyImage);
+                        }
+                    });
+                });
 
-        function closePopup() {
-            const popup = document.getElementById('popup');
-            const overlay = document.getElementById('overlay');
-            const videoPlayer = document.getElementById('videoPlayer');
+                lazyImages.forEach(function(lazyImage) {
+                    lazyImageObserver.observe(lazyImage);
+                });
+            } else {
+                // Optional: Fallback for older browsers
+                lazyImages.forEach(function(lazyImage) {
+                    lazyImage.src = lazyImage.dataset.src;
+                });
+            }
 
-            popup.style.display = 'none';
-            overlay.style.display = 'none';
-            videoPlayer.innerHTML = '';
-        }
+            loadThumbnails(); // Initialize thumbnail loading
+        });
 
         function loadThumbnails() {
-            fetch(scriptUrl)
-                .then(response => response.json())
-                .then(data => {
-                    renderThumbnails(data);
-                })
-                .catch(error => console.error('Error fetching data:', error));
+            let cachedData = localStorage.getItem('videoData');
+            if (cachedData) {
+                renderThumbnails(JSON.parse(cachedData));
+            } else {
+                fetch(scriptUrl)
+                    .then(response => response.json())
+                    .then(data => {
+                        localStorage.setItem('videoData', JSON.stringify(data));
+                        renderThumbnails(data);
+                    })
+                    .catch(error => console.error('Error fetching data:', error));
+            }
         }
 
         function renderThumbnails(data) {
             const videoList = document.getElementById('videoList');
             videoList.innerHTML = '';
-
             data.forEach(entry => {
                 const videoItem = document.createElement('div');
                 videoItem.className = 'videoItem';
-                videoItem.onclick = () => showPopup(entry.videoId);
+                videoItem.onclick = () => alert('Video clicked!'); // Example action
 
                 const img = document.createElement('img');
-                img.src = entry.thumbnail;
-                img.className = 'thumbnail';
+                img.dataset.src = entry.thumbnail;
+                img.alt = "Thumbnail";
+                img.className = 'lazy';
 
                 const title = document.createElement('div');
                 title.className = 'title';
@@ -150,8 +111,6 @@
                 videoList.appendChild(videoItem);
             });
         }
-
-        document.addEventListener('DOMContentLoaded', loadThumbnails);
     </script>
 </body>
 </html>
