@@ -3,114 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YouTube Thumbnail Viewer</title>
-    <style>
-        body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f9;
-        }
-        #videoList {
-            display: grid;
-            gap: 20px;
-            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-            padding: 20px;
-            box-sizing: border-box;
-        }
-        .videoItem {
-            background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
-            cursor: pointer;
-            text-align: center;
-        }
-        img.lazy {
-            width: 100%;
-            height: auto; /* Maintain aspect ratio */
-        }
-        .title {
-            padding: 8px;
-            font-size: 14px;
-            font-weight: bold;
-            color: #333;
-            background-color: #f9f9f9;
-        }
-    </style>
+    <title>Test Page</title>
 </head>
 <body>
-    <div id="videoList"></div>
+    <div id="videoList">Loading...</div>
     <script>
-        const scriptUrl = 'https://your-script-url.com';
-
-        document.addEventListener("DOMContentLoaded", function() {
-            var lazyImages = [].slice.call(document.querySelectorAll("img.lazy"));
-
-            if ("IntersectionObserver" in window) {
-                let lazyImageObserver = new IntersectionObserver(function(entries, observer) {
-                    entries.forEach(function(entry) {
-                        if (entry.isIntersecting) {
-                            let lazyImage = entry.target;
-                            lazyImage.src = lazyImage.dataset.src;
-                            lazyImage.classList.remove("lazy");
-                            lazyImageObserver.unobserve(lazyImage);
-                        }
-                    });
-                });
-
-                lazyImages.forEach(function(lazyImage) {
-                    lazyImageObserver.observe(lazyImage);
-                });
-            } else {
-                // Optional: Fallback for older browsers
-                lazyImages.forEach(function(lazyImage) {
-                    lazyImage.src = lazyImage.dataset.src;
-                });
-            }
-
-            loadThumbnails(); // Initialize thumbnail loading
-        });
-
-        function loadThumbnails() {
-            let cachedData = localStorage.getItem('videoData');
-            if (cachedData) {
-                renderThumbnails(JSON.parse(cachedData));
-            } else {
-                fetch(scriptUrl)
-                    .then(response => response.json())
-                    .then(data => {
-                        localStorage.setItem('videoData', JSON.stringify(data));
-                        renderThumbnails(data);
-                    })
-                    .catch(error => console.error('Error fetching data:', error));
-            }
-        }
-
-        function renderThumbnails(data) {
-            const videoList = document.getElementById('videoList');
-            videoList.innerHTML = '';
-            data.forEach(entry => {
-                const videoItem = document.createElement('div');
-                videoItem.className = 'videoItem';
-                videoItem.onclick = () => alert('Video clicked!'); // Example action
-
-                const img = document.createElement('img');
-                img.dataset.src = entry.thumbnail;
-                img.alt = "Thumbnail";
-                img.className = 'lazy';
-
-                const title = document.createElement('div');
-                title.className = 'title';
-                title.textContent = entry.title;
-
-                videoItem.appendChild(img);
-                videoItem.appendChild(title);
-                videoList.appendChild(videoItem);
+        const scriptUrl = 'https://script.google.com/macros/s/AKfycbzakyKFwPo3KsvaYPjMk92OJ_h0Dzy7jgUapVroc-r5tc3cEqqh3ES0IkVoN8nnayPMRg/exec';
+        fetch(scriptUrl)
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('videoList').innerHTML = JSON.stringify(data); // 데이터를 문자열로 변환하여 표시
+            })
+            .catch(error => {
+                console.error('Error fetching data:', error);
+                document.getElementById('videoList').innerHTML = 'Failed to load data!';
             });
-        }
     </script>
 </body>
 </html>
