@@ -15,9 +15,11 @@ function loadVideos() {
         fetch(scriptUrl)
             .then(response => response.json())
             .then(data => {
-                localStorage.setItem('videoData', JSON.stringify(data));
+                // 데이터 정렬: 최근 항목이 앞에 오도록 역순으로 정렬
+                const sortedData = data.reverse(); 
+                localStorage.setItem('videoData', JSON.stringify(sortedData));
                 localStorage.setItem('cacheTimestamp', now); // 타임스탬프 저장
-                renderThumbnails(data);
+                renderThumbnails(sortedData);
                 lazyLoadImages();
             })
             .catch(error => {
