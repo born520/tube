@@ -15,8 +15,8 @@
         }
         #videoList {
             display: grid;
-            gap: 10px;
-            grid-template-columns: repeat(8, 1fr);
+            gap: 20px;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /* Auto-adjust to fit the screen */
             width: 100%;
             max-width: 1200px;
             padding: 20px;
@@ -39,9 +39,12 @@
         }
         .title {
             padding: 10px;
-            font-size: 14px;
+            font-size: 16px;
+            font-weight: bold;
             color: #333;
             background-color: #f9f9f9;
+            cursor: pointer;
+            text-decoration: underline;
         }
         .popup {
             display: none;
@@ -64,11 +67,6 @@
             background-color: rgba(0, 0, 0, 0.7);
             z-index: 5;
         }
-        @media (max-width: 768px) {
-            #videoList {
-                grid-template-columns: repeat(1, 1fr);
-            }
-        }
     </style>
 </head>
 <body>
@@ -87,7 +85,7 @@
             const overlay = document.getElementById('overlay');
             const videoPlayer = document.getElementById('videoPlayer');
 
-            videoPlayer.innerHTML = `<iframe width="560" height="315" src="https://www.youtube.com/embed/${videoId}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+            videoPlayer.innerHTML = `<iframe width="560" height="315" src="https://www.youtube.com/embed/${videoId}?autoplay=1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
             
             popup.style.display = 'block';
             overlay.style.display = 'block';
@@ -129,6 +127,7 @@
                 const title = document.createElement('div');
                 title.className = 'title';
                 title.textContent = entry.title;
+                title.onclick = () => showPopup(entry.videoId); // 제목 클릭 시 팝업 실행
 
                 videoItem.appendChild(img);
                 videoItem.appendChild(title);
