@@ -5,10 +5,42 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>YouTube Thumbnail Viewer</title>
     <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+        }
+        #videoList {
+            display: grid;
+            gap: 10px;
+            grid-template-columns: repeat(8, 1fr);
+            width: 100%;
+            max-width: 1200px;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .videoItem {
+            text-align: center;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            transition: transform 0.2s;
+        }
+        .videoItem:hover {
+            transform: translateY(-10px);
+        }
         .thumbnail {
-            width: 120px;
+            width: 100%;
             cursor: pointer;
-            margin: 5px;
+        }
+        .title {
+            padding: 10px;
+            font-size: 14px;
+            color: #333;
         }
         .popup {
             display: none;
@@ -19,7 +51,7 @@
             z-index: 10;
             background-color: white;
             padding: 20px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.5);
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
         }
         .overlay {
             display: none;
@@ -28,8 +60,13 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0,0,0,0.7);
+            background-color: rgba(0, 0, 0, 0.7);
             z-index: 5;
+        }
+        @media (max-width: 768px) {
+            #videoList {
+                grid-template-columns: repeat(1, 1fr);
+            }
         }
     </style>
 </head>
@@ -42,7 +79,7 @@
     </div>
 
     <script>
-        const scriptUrl = 'https://script.google.com/macros/s/AKfycbwQxIzJcgcoz8fife4YYXdVxX7GT13kEADujQAAWrhFCOf43NWb0IUIWA_ve3IQMkj6tw/exec'; // 여기에 웹 앱 URL을 입력하세요.
+        const scriptUrl = 'https://script.google.com/macros/s/AKfycbwQxIzJcgcoz8fife4YYXdVxX7GT13kEADujQAAWrhFCOf43NWb0IUIWA_ve3IQMkj6tw/exec'; // 웹 앱 URL
 
         function showPopup(videoId) {
             const popup = document.getElementById('popup');
@@ -77,12 +114,21 @@
             videoList.innerHTML = ''; // Clear previous entries
 
             data.forEach(entry => {
+                const videoItem = document.createElement('div');
+                videoItem.className = 'videoItem';
+
                 const img = document.createElement('img');
                 img.src = entry.thumbnail;
                 img.className = 'thumbnail';
                 img.onclick = () => showPopup(entry.videoId);
 
-                videoList.appendChild(img);
+                const title = document.createElement('div');
+                title.className = 'title';
+                title.textContent = entry.title;
+
+                videoItem.appendChild(img);
+                videoItem.appendChild(title);
+                videoList.appendChild(videoItem);
             });
         }
 
