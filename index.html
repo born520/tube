@@ -16,28 +16,32 @@
         #videoList {
             display: grid;
             gap: 20px;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /* Auto-adjust to fit the screen */
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
             width: 100%;
             max-width: 1200px;
             padding: 20px;
             box-sizing: border-box;
         }
-        .videoItem {
+        .videoItem, .skeleton {
             text-align: center;
             background-color: #fff;
             border-radius: 8px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             overflow: hidden;
             transition: transform 0.2s;
+            position: relative;
         }
         .videoItem:hover {
             transform: translateY(-10px);
         }
-        .thumbnail {
+        .thumbnail, .skeleton-thumbnail {
             width: 100%;
-            cursor: pointer;
+            height: 120px;
+            background-color: #e0e0e0;
+            position: relative;
+            overflow: hidden;
         }
-        .title {
+        .title, .skeleton-title {
             padding: 10px;
             font-size: 16px;
             font-weight: bold;
@@ -45,6 +49,25 @@
             background-color: #f9f9f9;
             cursor: pointer;
             text-decoration: underline;
+        }
+        .skeleton-thumbnail::after {
+            content: '';
+            display: block;
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            background: linear-gradient(90deg, rgba(240,240,240,0) 0%, rgba(240,240,240,0.5) 50%, rgba(240,240,240,0) 100%);
+            animation: loading 1.5s infinite;
+        }
+        @keyframes loading {
+            0% {
+                transform: translateX(-100%);
+            }
+            100% {
+                transform: translateX(100%);
+            }
         }
         .popup {
             display: none;
@@ -102,6 +125,8 @@
         }
 
         function loadThumbnails() {
+            showSkeletons(8); // 기본적으로 8개의 스켈레톤을 표시
+
             fetch(scriptUrl)
                 .then(response => response.json())
                 .then(data => {
@@ -109,6 +134,27 @@
                     renderThumbnails(data);
                 })
                 .catch(error => console.error('Error fetching data:', error));
+        }
+
+        function showSkeletons(count) {
+            const videoList = document.getElementById('videoList');
+            videoList.innerHTML = ''; // 기존 항목 제거
+
+            for (let i = 0; i < count; i++) {
+                const skeleton = document.createElement('div');
+                skeleton.className = 'skeleton';
+
+                const thumbnail = document.createElement('div');
+                thumbnail.className = 'skeleton-thumbnail';
+
+                const title = document.createElement('div');
+                title.className = 'skeleton-title';
+                title.textContent = 'Loading...';
+
+                skeleton.appendChild(thumbnail);
+                skeleton.appendChild(title);
+                videoList.appendChild(skeleton);
+            }
         }
 
         function renderThumbnails(data) {
