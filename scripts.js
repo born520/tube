@@ -89,7 +89,8 @@ function showPopup(videoId) {
     const overlay = document.getElementById('overlay');
     const videoPlayer = document.getElementById('videoPlayer');
 
-    videoPlayer.innerHTML = `<iframe width="100%" height="315" src="https://www.youtube.com/embed/${videoId}?autoplay=1" frameborder="0" allowfullscreen></iframe>`;
+    // 자동 재생을 위해 autoplay 파라미터 추가
+    videoPlayer.innerHTML = `<iframe width="100%" height="315" src="https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1" frameborder="0" allowfullscreen></iframe>`;
     
     popup.style.display = 'block';
     overlay.style.display = 'block';
