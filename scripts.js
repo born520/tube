@@ -1,6 +1,6 @@
 // Existing JavaScript Code - scripts.js
 
-const scriptUrl = 'https://script.google.com/macros/s/AKfycbxoZIaPaQe_Pvb9QrvQWgjxAsx2jOIphAUJj0rZpjpoihvQtRXhdLrF484BeaFZf3cXqA/exec';
+const scriptUrl = 'https://script.google.com/macros/s/AKfycbxriZtrysnwgb-VyNsbMHCYd84Ft5835UKFAX7Z8ZelFUyAvis_zd1uPKfKsUJXuIdTgg/exec';
 
 const CACHE_EXPIRATION_TIME = 3600000; // 1시간 (밀리초 단위)
 
