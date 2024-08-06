@@ -1,5 +1,4 @@
-// Existing JavaScript Code - scripts.js
-
+// 변경된 웹앱 URL
 const scriptUrl = 'https://script.google.com/macros/s/AKfycbxriZtrysnwgb-VyNsbMHCYd84Ft5835UKFAX7Z8ZelFUyAvis_zd1uPKfKsUJXuIdTgg/exec';
 
 const CACHE_EXPIRATION_TIME = 3600000; // 1시간 (밀리초 단위)
@@ -33,16 +32,16 @@ function loadVideos() {
 
 function renderThumbnails(data) {
     const videoList = document.getElementById('videoList');
-    videoList.innerHTML = '';
+    videoList.innerHTML = ''; // Clear previous content
     data.forEach(entry => {
         const videoItem = document.createElement('div');
         videoItem.className = 'videoItem';
         videoItem.onclick = () => showPopup(entry.videoId);
 
         const img = document.createElement('img');
-        img.dataset.src = entry.thumbnail; // 레이지 로딩을 위한 데이터 속성
+        img.dataset.src = entry.thumbnail; // Lazy loading
         img.alt = "Thumbnail";
-        img.className = 'thumbnail lazy'; // 레이지 클래스 추가
+        img.className = 'thumbnail lazy';
 
         const title = document.createElement('div');
         title.className = 'title';
@@ -50,7 +49,7 @@ function renderThumbnails(data) {
 
         const viewCount = document.createElement('div');
         viewCount.className = 'viewCount';
-        viewCount.textContent = `Views: ${entry.viewCount}`;
+        viewCount.textContent = `조회수: ${entry.viewCount ? Number(entry.viewCount).toLocaleString() : '0'}`; // Format view count with commas
 
         videoItem.appendChild(img);
         videoItem.appendChild(title);
@@ -107,4 +106,3 @@ function closePopup() {
 }
 
 document.addEventListener('DOMContentLoaded', loadVideos);
-
