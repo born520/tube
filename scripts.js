@@ -1,3 +1,5 @@
+// Existing JavaScript Code - scripts.js
+
 const scriptUrl = 'https://script.google.com/macros/s/AKfycbxoZIaPaQe_Pvb9QrvQWgjxAsx2jOIphAUJj0rZpjpoihvQtRXhdLrF484BeaFZf3cXqA/exec';
 
 const CACHE_EXPIRATION_TIME = 3600000; // 1시간 (밀리초 단위)
@@ -46,8 +48,13 @@ function renderThumbnails(data) {
         title.className = 'title';
         title.textContent = entry.title;
 
+        const viewCount = document.createElement('div');
+        viewCount.className = 'viewCount';
+        viewCount.textContent = `Views: ${entry.viewCount}`;
+
         videoItem.appendChild(img);
         videoItem.appendChild(title);
+        videoItem.appendChild(viewCount);
         videoList.appendChild(videoItem);
     });
 }
@@ -100,3 +107,4 @@ function closePopup() {
 }
 
 document.addEventListener('DOMContentLoaded', loadVideos);
+
