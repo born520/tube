@@ -1,5 +1,5 @@
 // 변경된 웹앱 URL
-const scriptUrl = 'https://script.google.com/macros/s/AKfycbxriZtrysnwgb-VyNsbMHCYd84Ft5835UKFAX7Z8ZelFUyAvis_zd1uPKfKsUJXuIdTgg/exec';
+const scriptUrl = 'https://script.google.com/macros/s/AKfycbzQNxpwfW0JxV-WbA6r6mJt1IM75fjfhIhncxES4ufPaCbT6hs5jiPfp-n5_Tt4dg6Y/exec';
 
 const CACHE_EXPIRATION_TIME = 3600000; // 1시간 (밀리초 단위)
 
