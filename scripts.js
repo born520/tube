@@ -32,14 +32,14 @@ function loadVideos() {
 
 function renderThumbnails(data) {
     const videoList = document.getElementById('videoList');
-    videoList.innerHTML = ''; // Clear previous content
+    videoList.innerHTML = ''; // 이전 콘텐츠 지우기
     data.forEach(entry => {
         const videoItem = document.createElement('div');
         videoItem.className = 'videoItem';
         videoItem.onclick = () => showPopup(entry.videoId);
 
         const img = document.createElement('img');
-        img.dataset.src = entry.thumbnail; // Lazy loading
+        img.dataset.src = entry.thumbnail; // 레이지 로딩을 위한 데이터 속성
         img.alt = "Thumbnail";
         img.className = 'thumbnail lazy';
 
@@ -49,7 +49,7 @@ function renderThumbnails(data) {
 
         const viewCount = document.createElement('div');
         viewCount.className = 'viewCount';
-        viewCount.textContent = `조회수: ${entry.viewCount ? Number(entry.viewCount).toLocaleString() : '0'}`; // Format view count with commas
+        viewCount.textContent = `조회수: ${entry.viewCount ? Number(entry.viewCount).toLocaleString('ko-KR') : '0'}`; // 조회수를 천 단위 구분자와 함께 표시
 
         videoItem.appendChild(img);
         videoItem.appendChild(title);
@@ -77,7 +77,7 @@ function lazyLoadImages() {
             lazyImageObserver.observe(lazyImage);
         });
     } else {
-        // Fallback for older browsers
+        // 구형 브라우저에 대한 대체
         lazyImages.forEach(function(lazyImage) {
             lazyImage.src = lazyImage.dataset.src;
         });
